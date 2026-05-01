@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "7064191984",
+    "project_id": "masrofy-4af79",
+    "storage_bucket": "masrofy-4af79.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:7064191984:android:8cd3272240d64fb10a5335",
+        "android_client_info": {
+          "package_name": "com.example.masrofy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4Q70eGUA2jhPg8tOyToUbm3c7iFnruOQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
