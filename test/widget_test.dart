@@ -1,30 +1,36 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:masrofy/main.dart';
+import 'package:masrofy/features/dashboard/data/transaction_model.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  test('TransactionSummary calculates income, expenses, and balance', () {
+    final transactions = [
+      TransactionModel(
+        id: '1',
+        title: 'Salary',
+        amount: 1000,
+        type: 'income',
+        category: 'Salary',
+        note: '',
+        createdAt: DateTime(2026),
+        updatedAt: DateTime(2026),
+      ),
+      TransactionModel(
+        id: '2',
+        title: 'Groceries',
+        amount: 250,
+        type: 'expense',
+        category: 'Food',
+        note: '',
+        createdAt: DateTime(2026),
+        updatedAt: DateTime(2026),
+      ),
+    ];
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    final summary = TransactionSummary.fromTransactions(transactions);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(summary.income, 1000);
+    expect(summary.expenses, 250);
+    expect(summary.balance, 750);
   });
 }

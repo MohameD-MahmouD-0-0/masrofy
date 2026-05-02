@@ -1,45 +1,93 @@
-# Miscellaneous
-*.class
+# =========================
+# General
+# =========================
 *.log
-*.pyc
+*.tmp
+*.temp
 *.swp
+*.bak
+*.class
+*.pyc
 .DS_Store
-.atom/
-.build/
-.buildlog/
-.history
-.svn/
-.swiftpm/
-migrate_working_dir/
+Thumbs.db
 
-# IntelliJ related
+# =========================
+# IDEs
+# =========================
+.idea/
 *.iml
 *.ipr
 *.iws
-.idea/
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
+# VS Code (اختياري)
+.vscode/
 
-# Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
+# =========================
+# Flutter / Dart
+# =========================
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
-.pub-cache/
+.packages
 .pub/
-/build/
+.pub-cache/
+build/
 
-# Symbolication related
-app.*.symbols
+# =========================
+# Flutter Generated
+# =========================
+**/doc/api/
+**/ios/Flutter/.last_build_id
 
-# Obfuscation related
-app.*.map.json
+# =========================
+# Android / Gradle
+# =========================
+android/.gradle/
+android/app/build/
+android/build/
 
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
+# Android build outputs
+android/app/debug/
+android/app/profile/
+android/app/release/
+
+# =========================
+# iOS
+# =========================
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/App.framework
+ios/Flutter/Flutter.podspec
+
+# =========================
+# MacOS
+# =========================
+macos/Pods/
+
+# =========================
+# Linux / Windows builds
+# =========================
+linux/build/
+windows/build/
+
+# =========================
+# Firebase / Secrets
+# =========================
+# ⚠️ مهم: لو مشروعك Public متضيفش المفاتيح
+# لو Private ممكن تسيبهم
+# android/app/google-services.json
+# ios/Runner/GoogleService-Info.plist
+
+# =========================
+# Misc
+# =========================
+*.lock
+*.symbols
+*.map.json
+.history/
+.svn/
+.swiftpm/
+.build/
+.buildlog/
+migrate_working_dir/

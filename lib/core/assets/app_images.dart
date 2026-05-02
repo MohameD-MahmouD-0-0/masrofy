@@ -1,3 +1,3 @@
-class AppImages{
-  static String splash = 'assetes/images/Splash Screen.png';
+class AppImages {
+  static const String splash = 'assetes/images/image.png';
 }
