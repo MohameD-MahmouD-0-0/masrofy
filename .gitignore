@@ -1,0 +1,93 @@
+# =========================
+# General
+# =========================
+*.log
+*.tmp
+*.temp
+*.swp
+*.bak
+*.class
+*.pyc
+.DS_Store
+Thumbs.db
+
+# =========================
+# IDEs
+# =========================
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# VS Code (اختياري)
+.vscode/
+
+# =========================
+# Flutter / Dart
+# =========================
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub/
+.pub-cache/
+build/
+
+# =========================
+# Flutter Generated
+# =========================
+**/doc/api/
+**/ios/Flutter/.last_build_id
+
+# =========================
+# Android / Gradle
+# =========================
+android/.gradle/
+android/app/build/
+android/build/
+
+# Android build outputs
+android/app/debug/
+android/app/profile/
+android/app/release/
+
+# =========================
+# iOS
+# =========================
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/App.framework
+ios/Flutter/Flutter.podspec
+
+# =========================
+# MacOS
+# =========================
+macos/Pods/
+
+# =========================
+# Linux / Windows builds
+# =========================
+linux/build/
+windows/build/
+
+# =========================
+# Firebase / Secrets
+# =========================
+# ⚠️ مهم: لو مشروعك Public متضيفش المفاتيح
+# لو Private ممكن تسيبهم
+# android/app/google-services.json
+# ios/Runner/GoogleService-Info.plist
+
+# =========================
+# Misc
+# =========================
+*.lock
+*.symbols
+*.map.json
+.history/
+.svn/
+.swiftpm/
+.build/
+.buildlog/
+migrate_working_dir/
