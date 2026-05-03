@@ -2,29 +2,70 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class UserProfileService {
-  UserProfileService({FirebaseFirestore? firestore})
-    : _firestore = firestore ?? FirebaseFirestore.instance;
+  UserProfileService({
+    FirebaseFirestore?
+    firestore,
+  }) : _firestore =
+           firestore ??
+           FirebaseFirestore
+               .instance;
 
-  final FirebaseFirestore _firestore;
+  final FirebaseFirestore
+  _firestore;
 
-  DocumentReference<Map<String, dynamic>> userRef(String uid) {
-    return _firestore.collection('users').doc(uid);
+  DocumentReference<
+    Map<String, dynamic>
+  >
+  userRef(String uid) {
+    return _firestore
+        .collection('users')
+        .doc(uid);
   }
 
-  Stream<DocumentSnapshot<Map<String, dynamic>>> userProfileStream(String uid) {
-    return userRef(uid).snapshots();
+  Stream<
+    DocumentSnapshot<
+      Map<String, dynamic>
+    >
+  >
+  userProfileStream(
+    String uid,
+  ) {
+    return userRef(
+      uid,
+    ).snapshots();
   }
 
-  Future<void> createUserProfile({
+  Future<void>
+  createUserProfile({
     required User user,
     required String fullName,
   }) {
-    return userRef(user.uid).set({
+    return userRef(
+      user.uid,
+    ).set({
       'uid': user.uid,
-      'fullName': fullName.trim(),
+      'fullName': fullName
+          .trim(),
       'email': user.email,
-      'createdAt': FieldValue.serverTimestamp(),
-      'updatedAt': FieldValue.serverTimestamp(),
+      'createdAt':
+          FieldValue.serverTimestamp(),
+      'updatedAt':
+          FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
+  }
+
+  Future<void>
+  updateFullName({
+    required String uid,
+    required String fullName,
+  }) {
+    return userRef(
+      uid,
+    ).update({
+      'fullName': fullName
+          .trim(),
+      'updatedAt':
+          FieldValue.serverTimestamp(),
+    });
   }
 }
