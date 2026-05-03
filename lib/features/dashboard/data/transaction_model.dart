@@ -26,19 +26,19 @@ class TransactionModel {
   bool get isIncome => type == 'income';
 
   static TransactionModel fromDocument(
-    QueryDocumentSnapshot<Map<String, dynamic>> document,
+    DocumentSnapshot<Map<String, dynamic>> document,
   ) {
     final data = document.data();
     return TransactionModel(
       id: document.id,
-      title: data['title'] as String? ?? '',
-      amount: (data['amount'] as num?)?.toDouble() ?? 0,
-      type: data['type'] as String? ?? 'expense',
-      category: data['category'] as String? ?? '',
-      note: data['note'] as String? ?? '',
-      paymentMethod: data['paymentMethod'] as String? ?? '',
-      createdAt: _dateFromValue(data['createdAt']),
-      updatedAt: _dateFromValue(data['updatedAt']),
+      title: data?['title'] as String? ?? '',
+      amount: (data?['amount'] as num?)?.toDouble() ?? 0,
+      type: data?['type'] as String? ?? 'expense',
+      category: data?['category'] as String? ?? '',
+      note: data?['note'] as String? ?? '',
+      paymentMethod: data?['paymentMethod'] as String? ?? '',
+      createdAt: _dateFromValue(data?['createdAt']),
+      updatedAt: _dateFromValue(data?['updatedAt']),
     );
   }
 

@@ -64,7 +64,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       if (!mounted) return;
       Navigator.pushNamedAndRemoveUntil(
         context,
-        AppRoutes.dashboard,
+        AppRoutes.mainNavigation,
         (_) => false,
       );
     } catch (error) {

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/primary_button.dart';
+import '../../notifications/data/notification_service.dart';
 import '../data/transaction_model.dart';
 import '../data/transaction_service.dart';
 
@@ -23,6 +24,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   late final TextEditingController _amountController;
   late final TextEditingController _noteController;
   final _transactionService = TransactionService();
+  final _notificationService = NotificationService();
 
   late String _type;
   String? _selectedCategory;
@@ -76,11 +78,14 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
       if (t.paymentMethod.isNotEmpty &&
           !_paymentMethods.any((m) => m['label'] == t.paymentMethod)) {
-        _paymentMethods
-            .add({'label': t.paymentMethod, 'icon': Icons.payment_rounded});
+        _paymentMethods.add({
+          'label': t.paymentMethod,
+          'icon': Icons.payment_rounded,
+        });
       }
-      _selectedPaymentMethod =
-          t.paymentMethod.isNotEmpty ? t.paymentMethod : null;
+      _selectedPaymentMethod = t.paymentMethod.isNotEmpty
+          ? t.paymentMethod
+          : null;
     }
   }
 
@@ -97,7 +102,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      setState(() => _errorMessage = 'Please login before adding transactions.');
+      setState(
+        () => _errorMessage = 'Please login before adding transactions.',
+      );
       return;
     }
 
@@ -118,10 +125,16 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           note: _noteController.text,
           paymentMethod: _selectedPaymentMethod ?? '',
         );
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Transaction updated.')),
+        await _notificationService.createNotification(
+          user.uid,
+          'Transaction updated',
+          "Your transaction '${_titleController.text.trim()}' was updated successfully.",
+          'transaction_updated',
         );
+        if (!mounted) return;
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Transaction updated.')));
       } else {
         await _transactionService.addTransaction(
           uid: user.uid,
@@ -132,12 +145,22 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           note: _noteController.text,
           paymentMethod: _selectedPaymentMethod ?? '',
         );
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Transaction added.')),
+        await _notificationService.createNotification(
+          user.uid,
+          'Transaction added',
+          "Your $_type transaction '${_titleController.text.trim()}' was added successfully.",
+          'transaction_added',
         );
+        if (!mounted) return;
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Transaction added.')));
       }
-      Navigator.pop(context);
+      if (_isEditMode || Navigator.canPop(context)) {
+        Navigator.pop(context);
+      } else {
+        _clearForm();
+      }
     } catch (error) {
       if (!mounted) return;
       setState(() => _errorMessage = 'Could not save transaction: $error');
@@ -308,8 +331,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
-            final formWidth =
-                constraints.maxWidth > 600 ? 560.0 : constraints.maxWidth;
+            final formWidth = constraints.maxWidth > 600
+                ? 560.0
+                : constraints.maxWidth;
 
             return SingleChildScrollView(
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -335,8 +359,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                             textInputAction: TextInputAction.next,
                             validator: (value) =>
                                 value == null || value.trim().isEmpty
-                                    ? 'Title is required.'
-                                    : null,
+                                ? 'Title is required.'
+                                : null,
                           ),
                           const SizedBox(height: 24),
                           const _FormSectionTitle(
@@ -396,8 +420,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                                   decoration: const InputDecoration(
                                     labelText: 'Category',
                                     hintText: 'Food, salary, transport...',
-                                    prefixIcon:
-                                        Icon(Icons.label_outline_rounded),
+                                    prefixIcon: Icon(
+                                      Icons.label_outline_rounded,
+                                    ),
                                   ),
                                   items: _categories.map((cat) {
                                     return DropdownMenuItem<String>(
@@ -417,8 +442,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                                   onChanged: _isLoading
                                       ? null
                                       : (value) => setState(
-                                            () => _selectedCategory = value,
-                                          ),
+                                          () => _selectedCategory = value,
+                                        ),
                                   validator: (value) => value == null
                                       ? 'Category is required.'
                                       : null,
@@ -475,9 +500,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                                   onChanged: _isLoading
                                       ? null
                                       : (value) => setState(
-                                            () =>
-                                                _selectedPaymentMethod = value,
-                                          ),
+                                          () => _selectedPaymentMethod = value,
+                                        ),
                                   validator: (value) => value == null
                                       ? 'Payment method is required.'
                                       : null,
@@ -537,6 +561,19 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     if (amount == null) return 'Enter a valid amount.';
     if (amount <= 0) return 'Amount must be greater than zero.';
     return null;
+  }
+
+  void _clearForm() {
+    _formKey.currentState?.reset();
+    _titleController.clear();
+    _amountController.clear();
+    _noteController.clear();
+    setState(() {
+      _type = 'expense';
+      _selectedCategory = null;
+      _selectedPaymentMethod = null;
+      _errorMessage = null;
+    });
   }
 }
 
@@ -620,10 +657,9 @@ class _FormSectionTitle extends StatelessWidget {
             title,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium
-                ?.copyWith(fontWeight: FontWeight.w900),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900),
           ),
         ),
       ],

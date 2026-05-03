@@ -23,48 +23,64 @@ class TransactionService {
         );
   }
 
-  Future<void> addTransaction({
+  Future<TransactionModel?> getTransaction({
     required String uid,
-    required String title,
-    required double amount,
-    required String type,
-    required String category,
-    required String note,
-    required String paymentMethod,
+    required String transactionId,
+  }) async {
+    final document = await _transactionsRef(uid).doc(transactionId).get();
+    if (!document.exists) return null;
+    return TransactionModel.fromDocument(document);
+  }
+
+  Future<String> addTransaction({
+    required String uid,
+    TransactionModel? transaction,
+    String? title,
+    double? amount,
+    String? type,
+    String? category,
+    String? note,
+    String? paymentMethod,
   }) async {
     final document = _transactionsRef(uid).doc();
     await document.set({
       'id': document.id,
-      'title': title.trim(),
-      'amount': amount,
-      'type': type,
-      'category': category.trim(),
-      'note': note.trim(),
-      'paymentMethod': paymentMethod.trim(),
+      'title': (title ?? transaction?.title ?? '').trim(),
+      'amount': amount ?? transaction?.amount ?? 0,
+      'type': type ?? transaction?.type ?? 'expense',
+      'category': (category ?? transaction?.category ?? '').trim(),
+      'note': (note ?? transaction?.note ?? '').trim(),
+      'paymentMethod': (paymentMethod ?? transaction?.paymentMethod ?? '')
+          .trim(),
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
     });
+    return document.id;
   }
 
   Future<void> updateTransaction({
     required String uid,
     required String transactionId,
-    required String title,
-    required double amount,
-    required String type,
-    required String category,
-    required String note,
-    required String paymentMethod,
+    Map<String, dynamic>? data,
+    String? title,
+    double? amount,
+    String? type,
+    String? category,
+    String? note,
+    String? paymentMethod,
   }) async {
-    await _transactionsRef(uid).doc(transactionId).update({
-      'title': title.trim(),
-      'amount': amount,
-      'type': type,
-      'category': category.trim(),
-      'note': note.trim(),
-      'paymentMethod': paymentMethod.trim(),
+    final updateData = <String, dynamic>{
+      if (data != null) ...data,
+      if (title != null) 'title': title.trim(),
+      if (amount != null) 'amount': amount,
+      if (type != null) 'type': type,
+      if (category != null) 'category': category.trim(),
+      if (note != null) 'note': note.trim(),
+      if (paymentMethod != null) 'paymentMethod': paymentMethod.trim(),
       'updatedAt': FieldValue.serverTimestamp(),
-    });
+    };
+
+    await _transactionsRef(uid).doc(transactionId).update(updateData);
   }
 
   Future<void> deleteTransaction({
