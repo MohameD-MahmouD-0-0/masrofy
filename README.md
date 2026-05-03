@@ -1,60 +1,70 @@
 # Masrofy
 
-Personal finance tracking app built with Flutter and Firebase.
+A Flutter + Firebase personal finance app for tracking income, expenses, budgets, and financial activity.
 
-## Project Overview
+## Overview
 
-Masrofy is a Flutter finance app that currently provides Firebase-backed authentication and a basic transaction dashboard. Users can register, log in, reset their password, log out, and add income or expense transactions stored in Cloud Firestore.
+Masrofy is a personal finance app built with Flutter and Firebase. It currently supports email/password authentication, user profiles, transaction tracking, monthly budgets, notifications, and a bottom navigation shell for the main app areas.
 
-Current implementation includes:
+User data is stored under each authenticated user in Cloud Firestore. Transactions are streamed in real time, dashboard totals are calculated from real transaction data, and monthly budget spending is calculated from expense transactions for the selected month.
 
-- Firebase Authentication for email/password sign-in.
-- User registration, login, forgot password, and logout flows.
-- Firestore user profile storage under `users/{uid}`.
-- Dashboard screen with user greeting.
-- Income, expense, and balance summary calculated from Firestore transactions.
-- Add transaction form for income and expense entries.
-- Recent transactions list from real-time Firestore snapshots.
-- Android launcher icon configuration through `flutter_launcher_icons`.
-- App name/package setup still uses the Flutter example package id in places, so review it before release.
-
-This project is not production-ready yet. It is an active Flutter/Firebase app foundation that still needs platform hardening, security rules review, broader testing, and more finance features.
+The app is still under active development. Reports and Profile currently exist as styled placeholder screens.
 
 ## Tech Stack
 
 - Flutter
 - Dart
 - Firebase Core
-- Firebase Authentication
+- Firebase Auth
 - Cloud Firestore
 - Android support
 - iOS support
+- Web support
+- Windows/macOS scaffold support
+- Linux scaffold support, without Firebase options configured in `firebase_options.dart`
 
-## Current Features
+## Features
 
-- [x] Splash/Auth routing
-- [x] Login
-- [x] Register
-- [x] Forgot password
-- [x] Dashboard summary
-- [x] Add income/expense transaction
-- [x] Firestore real-time transactions
-- [x] Logout
-- [ ] Budgets
-- [ ] Charts/reports
-- [ ] Category management
-- [ ] Profile management screen
-- [ ] Dark mode
-- [ ] Localization
+- [x] Firebase Authentication
+- [x] Login/Register
+- [x] Forgot Password
+- [x] Auth state routing
+- [x] Dashboard
+- [x] Transactions
+- [x] Add Transaction
+- [x] View Transaction Details
+- [x] Edit/Delete Transactions
+- [x] Monthly Budget
+- [x] Bottom Navigation
+- [x] Notifications system
+- [x] Reports placeholder
+- [x] Profile placeholder
+- [x] Launcher icon configuration
+
+## App Screens
+
+- **Splash**: Checks Firebase Auth state and routes signed-in users into the main app.
+- **Login**: Signs in existing users with email and password.
+- **Register**: Creates a Firebase Auth account and stores a user profile document.
+- **Forgot Password**: Sends a Firebase password reset email.
+- **Main Navigation**: IndexedStack-based bottom navigation with Home, Transactions, Add, Budget, Reports, and Profile tabs.
+- **Dashboard**: Shows the signed-in user header, finance summary cards, notification bell, and current monthly budget section.
+- **Transactions**: Streams and displays all user transactions with local type filters and search.
+- **Add Transaction**: Adds income or expense transactions to Firestore.
+- **Transaction Details**: Shows transaction fields and provides edit/delete actions.
+- **Edit Transaction**: Updates an existing transaction document.
+- **Budget**: Shows monthly budget, live expense progress, remaining amount, and set/edit/delete controls.
+- **Reports**: Placeholder screen for future reports and analytics.
+- **Profile**: Placeholder screen for future profile settings.
+- **Notifications**: Lists user notifications, unread state, mark-all-read, delete, and clear-all actions.
 
 ## Project Structure
 
 ```text
 lib/
-  main.dart
-  firebase_options.dart
   core/
     assets/
+    navigation/
     routes/
     theme/
     utils/
@@ -64,206 +74,235 @@ lib/
       data/
       presentation/
       widgets/
+    budget/
+      data/
+      presentation/
     dashboard/
       data/
       presentation/
       widgets/
+    notifications/
+      data/
+      presentation/
+    profile/
+      presentation/
+    reports/
+      presentation/
     splash/
       presentation/
-
-android/
-ios/
-assetes/
-test/
+  firebase_options.dart
+  main.dart
 ```
 
-### Key folders
+### Folder Roles
 
-`lib/main.dart`  
-Application entry point. Initializes Firebase and starts `MyApp`.
+- `lib/main.dart`: Initializes Firebase and starts the Material app with named routes.
+- `lib/firebase_options.dart`: FlutterFire-generated Firebase options for supported platforms.
+- `lib/core/assets/`: Central asset path constants.
+- `lib/core/navigation/`: Main bottom navigation wrapper.
+- `lib/core/routes/`: App route constants and route registrations.
+- `lib/core/theme/`: App colors, text styles, and theme configuration.
+- `lib/core/utils/`: Shared utility code.
+- `lib/core/widgets/`: Reusable UI widgets.
+- `lib/features/auth/`: Firebase Auth, user profile creation, login, register, and password reset.
+- `lib/features/dashboard/`: Dashboard, transaction model/service, add/edit/details/list screens, and finance cards.
+- `lib/features/budget/`: Monthly budget model, Firestore service, and budget UI.
+- `lib/features/notifications/`: Notification model, Firestore service, and notifications UI.
+- `lib/features/reports/`: Reports placeholder screen.
+- `lib/features/profile/`: Profile placeholder screen.
+- `lib/features/splash/`: Splash screen and auth-state routing.
 
-`lib/firebase_options.dart`  
-Generated FlutterFire configuration file. It contains platform Firebase options for web, Android, iOS, macOS, and Windows. The current `main.dart` still uses bare `Firebase.initializeApp()`, so wire this file into initialization when targeting web or fully multi-platform Firebase.
+## Firestore Structure
 
-`lib/core/`  
-Shared application code:
+The app uses user-scoped Firestore data.
 
-- `assets/`: central asset path constants.
-- `routes/`: route names and route map.
-- `theme/`: colors, text styles, and app theme.
-- `utils/`: general utilities.
-- `widgets/`: reusable UI widgets such as text fields and primary buttons.
+```text
+users/{uid}
+users/{uid}/transactions/{transactionId}
+users/{uid}/notifications/{notificationId}
+users/{uid}/budgets/{budgetId}
+```
 
-`lib/features/auth/`  
-Authentication feature:
+### `users/{uid}`
 
-- `data/`: Firebase Auth service, user profile service, and auth error mapping.
-- `presentation/`: login, register, and forgot password screens.
-- `widgets/`: shared auth layout widgets.
+Important fields:
 
-`lib/features/dashboard/`  
-Finance dashboard feature:
+- `uid`
+- `fullName`
+- `email`
+- `createdAt`
+- `updatedAt`
 
-- `data/`: transaction model and Firestore transaction service.
-- `presentation/`: dashboard and add transaction screens.
-- `widgets/`: summary and transaction cards.
+### `users/{uid}/transactions/{transactionId}`
 
-`lib/features/splash/`  
-Splash screen and auth-state routing.
+Important fields:
 
-`android/` and `ios/`  
-Generated Flutter platform folders. Android includes `google-services.json` and launcher icon resources.
+- `id`
+- `title`
+- `amount`
+- `type`: `income` or `expense`
+- `category`
+- `note`
+- `paymentMethod`
+- `createdAt`
+- `updatedAt`
 
-`assetes/`  
-Image assets declared in `pubspec.yaml`. Note: the folder is currently named `assetes`, not `assets`.
+### `users/{uid}/notifications/{notificationId}`
 
-`test/`  
-Basic Flutter test coverage. Current tests verify transaction summary calculations.
+Important fields:
+
+- `id`
+- `title`
+- `message`
+- `type`
+- `isRead`
+- `createdAt`
+
+Notification types currently created include transaction add/update/delete and budget set/update/delete events.
+
+### `users/{uid}/budgets/{budgetId}`
+
+Budget document ids use the month key format when created by the app:
+
+```text
+users/{uid}/budgets/{YYYY-MM}
+```
+
+Important fields:
+
+- `id`
+- `monthKey`
+- `amount`
+- `spent`
+- `remaining`
+- `createdAt`
+- `updatedAt`
+
+Budget UI calculates live monthly spending from expense transactions in the selected month. Stored `spent` and `remaining` are written when setting/updating a budget, but the displayed progress is based on the transaction stream.
 
 ## Firebase Setup
 
-Masrofy requires Firebase to run the authentication and Firestore features.
-
 1. Create a Firebase project.
-2. Enable Email/Password sign-in in Firebase Authentication.
+2. Enable Email/Password Authentication.
 3. Create a Cloud Firestore database.
-4. Add Android configuration:
+4. Add Android Firebase config:
 
    ```text
    android/app/google-services.json
    ```
 
-5. Generate or refresh FlutterFire configuration:
+5. Add or refresh `lib/firebase_options.dart` with FlutterFire CLI if needed:
 
    ```bash
    dart pub global activate flutterfire_cli
    flutterfire configure
    ```
 
-6. When using `lib/firebase_options.dart`, initialize Firebase like this:
+6. Keep Firebase client configuration files local to your project setup and do not expose private server keys or service account credentials.
 
-   ```dart
-   await Firebase.initializeApp(
-     options: DefaultFirebaseOptions.currentPlatform,
-   );
-   ```
+Note: `lib/firebase_options.dart` exists, but `lib/main.dart` currently calls `Firebase.initializeApp()` without `DefaultFirebaseOptions.currentPlatform`.
 
-Do not commit private server keys or service account credentials. Firebase client API keys are not server secrets, but they should still be restricted appropriately in Firebase/Google Cloud settings.
+## Firestore Rules
 
-### Firestore Data Shape
+Example user-scoped rules:
 
-User profile:
+```js
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
 
-```text
-users/{uid}
+      match /transactions/{transactionId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+
+      match /notifications/{notificationId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+
+      match /budgets/{budgetId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+  }
+}
 ```
 
-Transaction collection:
+Review and harden rules before production use.
 
-```text
-users/{uid}/transactions/{transactionId}
-```
+## Firestore Indexes
 
-Transaction fields currently used:
+Firestore may require composite indexes for some queries.
 
-- `id`
-- `title`
-- `amount`
-- `type` (`income` or `expense`)
-- `category`
-- `note`
-- `createdAt`
-- `updatedAt`
+The monthly budget spent calculation queries transactions with:
 
-## Installation & Running
+- `type == expense`
+- `createdAt >= start of month`
+- `createdAt < start of next month`
 
-Install dependencies:
+If Firestore reports a missing index, use the Firebase Console error link to create the required index.
+
+## Installation
 
 ```bash
+git clone <repo-url>
+cd masrofy
 flutter pub get
 ```
 
-Run on the default connected device:
+## Running
 
 ```bash
 flutter run
-```
-
-Run on Chrome:
-
-```bash
 flutter run -d chrome
 ```
 
-Clean generated build output:
-
-```bash
-flutter clean
-```
-
-## Build Commands
-
-Build an Android APK:
+## Build
 
 ```bash
 flutter build apk --release
-```
-
-Build an Android App Bundle:
-
-```bash
 flutter build appbundle --release
 ```
 
-## Known Issues / Notes
+## Testing
 
-- `lib/firebase_options.dart` exists, but `lib/main.dart` currently calls `Firebase.initializeApp()` without `DefaultFirebaseOptions.currentPlatform`. Web Firebase initialization may fail until this is wired in.
-- The asset folder is named `assetes/`; consider renaming it to `assets/` and updating `pubspec.yaml` and asset constants.
-- Android still uses `com.example.masrofy` in platform configuration. Change this before publishing.
-- Firestore security rules are not included in this repository. Add rules that restrict each user to their own profile and transactions.
-- Tests are basic and currently cover transaction summary calculations only.
-- UI has been improved for the current dashboard and forms, but more design refinement is still expected as features grow.
-- Some platform files are generated and may change after running FlutterFire or launcher icon tools.
+```bash
+flutter analyze
+flutter test
+```
 
-## Roadmap
-
-- Budgets
-- Category management
-- Charts and reports
-- Arabic/English localization
-- Dark mode
-- More complete widget, service, and integration tests
-- Profile screen
-- Transaction editing and deleting
-- Firestore security rules and indexes documentation
-- Production package id and app signing setup
-
-## Contribution Workflow
-
-Create a feature branch:
+## Git Workflow
 
 ```bash
 git checkout -b feature/your-feature
-```
-
-Stage changes:
-
-```bash
 git add .
-```
-
-Commit:
-
-```bash
-git commit -m "Your message"
-```
-
-Push:
-
-```bash
+git commit -m "Your commit message"
 git push -u origin feature/your-feature
 ```
 
+## Known Notes / Limitations
+
+- Reports and Profile are currently placeholders.
+- Firebase config must be set up locally for the target platforms.
+- `firebase_options.dart` exists, but app initialization currently uses bare `Firebase.initializeApp()`.
+- Firestore indexes may be required for transaction filtering used by budget calculations.
+- The UI is still under development.
+- Android package id currently uses `com.example.masrofy`.
+- The asset folder is named `assetes/` in the repository and `pubspec.yaml`.
+- Tests are currently limited.
+
+## Roadmap
+
+- Reports and charts
+- Profile settings
+- Categories management
+- Budget alerts
+- Arabic/English localization
+- Dark mode
+- Better tests
+- Responsive tablet/web UI
+
 ## License
 
-This project is for educational purposes unless a license is added.
+No explicit license file is currently included.

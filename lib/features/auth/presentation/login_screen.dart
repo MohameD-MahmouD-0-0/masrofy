@@ -45,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
         password: _passwordController.text,
       );
       if (!mounted) return;
-      Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
+      Navigator.pushReplacementNamed(context, AppRoutes.mainNavigation);
     } catch (error) {
       if (!mounted) return;
       setState(() => _errorMessage = authErrorMessage(error));
