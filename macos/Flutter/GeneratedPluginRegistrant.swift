@@ -5,6 +5,8 @@
 import FlutterMacOS
 import Foundation
 
+
+func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
 import cloud_firestore
 import firebase_auth
 import firebase_core
