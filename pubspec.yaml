@@ -13,7 +13,10 @@ dependencies:
   firebase_auth: ^6.4.0
   firebase_core: ^4.6.0
   cloud_firestore: ^6.2.0
+  flutter_bloc: ^9.1.1
   flutter_riverpod: ^2.6.1
+  pdf: ^3.11.3
+  printing: ^5.14.3
   shared_preferences: ^2.3.0
 
 dev_dependencies:
@@ -31,3 +34,5 @@ flutter_launcher_icons:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assetes/images/
