@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
+
 import '../../../../core/theme/app_colors.dart';
 
-const distributionColors = [
+const List<Color> distributionColors = <Color>[
   AppColors.reportRed,
   AppColors.primary,
   AppColors.success,
