@@ -7,10 +7,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'Firebase Web is not configured for the new project. '
-        'Create a Web app in Firebase and run flutterfire configure.',
-      );
+      return web;
     }
 
     switch (defaultTargetPlatform) {
@@ -44,6 +41,15 @@ class DefaultFirebaseOptions {
     appId: '1:542813765612:android:3493c128c06a5d6aa28ac9',
     messagingSenderId: '542813765612',
     projectId: 'masrof-60ad5',
+    storageBucket: 'masrof-60ad5.firebasestorage.app',
+  );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyDuQSEu3h9rciwTgAp9YJHRGJS4ImFPwko',
+    appId: '1:542813765612:web:3493c128c06a5d6aa28ac9',
+    messagingSenderId: '542813765612',
+    projectId: 'masrof-60ad5',
+    authDomain: 'masrof-60ad5.firebaseapp.com',
     storageBucket: 'masrof-60ad5.firebasestorage.app',
   );
 }
