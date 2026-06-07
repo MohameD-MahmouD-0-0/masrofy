@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/assets/app_images.dart';
+import '../../../core/firebase/app_firebase.dart';
 import '../../../core/routes/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 
@@ -21,7 +22,15 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _routeFromAuthState() async {
     await Future<void>.delayed(const Duration(milliseconds: 900));
-    final user = await FirebaseAuth.instance.authStateChanges().first;
+    User? user;
+    try {
+      await AppFirebase.initialize();
+      user = await FirebaseAuth.instance.authStateChanges().first.timeout(
+        const Duration(seconds: 4),
+      );
+    } catch (_) {
+      user = null;
+    }
     if (!mounted) return;
 
     Navigator.pushReplacementNamed(
